@@ -89,8 +89,6 @@ impl Interpreter {
                     break;
                 }
             }
-
-            // println!("Loop restarted");
         }
 
     }
@@ -202,11 +200,13 @@ impl Interpreter {
         marked: &mut Vec<bool>,
     ) {
         // println!("mx: {:?}, my: {:?}", mx, my);
-        // println!(" x: {:?},  y: {:?}\n", x, y);
+        // println!(" x: {:?},  y: {:?}", x, y);
         // println!("DP: {:?}, CC: {:?}", self.direction_pointer, self.codel_chooser);
+        // println!("Size: {:?}", size);
         if self.image.in_bounds(x as u32, y as u32) {
             // println!("curr: {:?},  step: {:?}\n", self.current_color_code(), self.color_at(x, y));
             let visit_index = self.marked_index(x, y) as usize;
+            // println!("{:?}\n", visit_index);
 
             if self.current_color_eq(x, y) && !marked[visit_index] {
                 *size += 1;
@@ -307,7 +307,9 @@ impl Interpreter {
         }
         // print!("\n");
     }
-
+    // 0, 1, 2
+    // 3, 4, 5
+    // 6, 7, 8
     fn marked_index(&self, x: i32, y: i32) -> i32 {
         if x == 0 && y == 0 {
             return 0;
@@ -321,6 +323,6 @@ impl Interpreter {
             return x;
         }
 
-        (x-1) * self.image.width() as i32 + (y-1)
+        y * self.image.width() as i32 + x
     }
 }
