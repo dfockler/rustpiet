@@ -5,8 +5,7 @@ mod colors;
 mod ops;
 
 use std::path::Path;
-use image::{GenericImage, DynamicImage};
-use image::Rgba;
+use image::DynamicImage;
 
 use interpreter::Interpreter;
 

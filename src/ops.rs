@@ -154,11 +154,11 @@ fn pointer(interpreter: &mut Interpreter) {
     match interpreter.stack.pop() {
         Some(n) => {
             if n > 0 {
-                for i in 1..n.abs()+1 {
+                for _ in 1..n.abs()+1 {
                     interpreter.step_dp();
                 }
             } else {
-                for i in 1..n.abs()+1 {
+                for _ in 1..n.abs()+1 {
                     interpreter.step_dp_counter();
                 }
             }
@@ -172,7 +172,7 @@ fn switch(interpreter: &mut Interpreter) {
 
     match interpreter.stack.pop() {
         Some(n) => {
-            for i in 1..n.abs()+1 {
+            for _ in 1..n.abs()+1 {
                 interpreter.toggle_cc();
             }
         },
@@ -198,7 +198,7 @@ fn roll(interpreter: &mut Interpreter) {
         Some((rolls, depth)) => {
             let neg_depth = interpreter.stack.len() as i32 - depth; 
 
-            for i in 1..rolls.abs()+1 {
+            for _ in 1..rolls.abs()+1 {
                 if rolls > 0 {
                     let x = interpreter.stack.pop().unwrap();
                     interpreter.stack.insert(neg_depth as usize, x);

@@ -307,9 +307,7 @@ impl Interpreter {
         }
         // print!("\n");
     }
-    // 0, 1, 2
-    // 3, 4, 5
-    // 6, 7, 8
+    
     fn marked_index(&self, x: i32, y: i32) -> i32 {
         if x == 0 && y == 0 {
             return 0;
