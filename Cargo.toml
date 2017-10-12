@@ -13,4 +13,4 @@ exclude = [
 ]
 
 [dependencies]
-image = "*"
+image = "0.14.0"
