@@ -2,6 +2,9 @@
 name = "rustpiet"
 version = "0.1.0"
 authors = ["Dan Fockler <dfockler13@gmail.com>"]
+exclude = [
+  "assets/*",
+]
 
 [dependencies]
 image = "*"
