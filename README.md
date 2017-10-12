@@ -1,10 +1,22 @@
-# rustpiet
-A Piet interpreter implementation in Rust 🎨
+# rustpiet 🎨
+A Piet interpreter implementation in Rust
 
 ## Usage
 
-You'll have to clone the repo and then inside the folder you can run the following.
+You can install via [cargo](https://crates.io/) by running `cargo install rustpiet` and then
+
+```
+rustpiet <filename>
+```
+
+or you can clone the repo and then inside the root project folder you can run the following.
 
 ```
 cargo run <filename>
 ```
+
+It should work with any filetype that the [image](https://github.com/PistonDevelopers/image) library can open.
+
+## Contributing
+
+Please file [issues](https://github.com/dfockler/rustpiet/issues) or [pull requests](https://github.com/dfockler/rustpiet/pulls) through GitHub
