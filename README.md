@@ -1,6 +1,10 @@
 # rustpiet 🎨
 A Piet interpreter implementation in Rust
 
+More about Piet [here](http://www.dangermouse.net/esoteric/piet.html)
+
+You can find some sample programs [here](http://www.dangermouse.net/esoteric/piet/samples.html)
+
 ## Usage
 
 You can install via [cargo](https://crates.io/) by running `cargo install rustpiet` and then
