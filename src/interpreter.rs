@@ -92,7 +92,7 @@ impl Interpreter {
     }
 
     fn process_action(&mut self, next_color: &Rgba<u8>) {
-        let color_code = colors::color_code(&next_color).unwrap();
+        let color_code = colors::color_code(next_color).unwrap();
         if color_code != 1 {
             let curr_color = self.current_color_code();
             let shade_diff = colors::shade_difference(curr_color, color_code);

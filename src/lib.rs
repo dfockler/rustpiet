@@ -11,7 +11,7 @@ use interpreter::Interpreter;
 
 pub fn run(filename: &str) {
     let path = Path::new(filename);
-    let image = loadfile(&path);
+    let image = loadfile(path);
     let mut interp = Interpreter::new(image);
 
     interp.run();

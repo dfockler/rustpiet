@@ -1,20 +1,9 @@
-/* method_table = [
-  [nil, :push, :pop],
-  [:add, :subtract, :multiply],
-  [:divide, :mod, :not],
-  [:greater, :pointer, :switch],
-  [:duplicate, :roll, :in_number],
-  [:in_char, :out, :out]
-]
-*/
-
 use interpreter::Interpreter;
 use std::io;
 use std::io::Write;
 
 pub fn call_op(interpreter: &mut Interpreter, color_value: (i32, i32)) {
     match color_value {
-        (0, 0) => (),
         (0, 1) => push(interpreter),
         (0, 2) => pop(interpreter),
         (1, 0) => add(interpreter),
@@ -28,8 +17,7 @@ pub fn call_op(interpreter: &mut Interpreter, color_value: (i32, i32)) {
         (3, 2) => switch(interpreter),
         (4, 0) => duplicate(interpreter),
         (4, 1) => roll(interpreter),
-        (4, 2) => input(interpreter),
-        (5, 0) => input(interpreter),
+        (4, 2) | (5, 0) => input(interpreter),
         (5, 1) => out_number(interpreter),
         (5, 2) => out_char(interpreter),
         _ => (),
@@ -65,110 +53,88 @@ fn pop(interpreter: &mut Interpreter) {
 fn add(interpreter: &mut Interpreter) {
     // println!("add: {:?}", interpreter.stack);
 
-    match pop_two(interpreter) {
-        Some((a, b)) => {
-            interpreter.stack.push(a + b);
-        }
-        _ => (),
-    };
+    if let Some((a, b)) = pop_two(interpreter) {
+        interpreter.stack.push(a + b);
+    }
 }
 
 fn subtract(interpreter: &mut Interpreter) {
     // println!("subtract: {:?}", interpreter.stack);
 
-    match pop_two(interpreter) {
-        Some((a, b)) => {
-            interpreter.stack.push(b - a);
-        }
-        _ => (),
-    };
+    if let Some((a, b)) = pop_two(interpreter) {
+        interpreter.stack.push(b - a);
+    }
 }
 
 fn multiply(interpreter: &mut Interpreter) {
     // println!("multiply: {:?}", interpreter.stack);
 
-    match pop_two(interpreter) {
-        Some((a, b)) => {
-            interpreter.stack.push(a * b);
-        }
-        _ => (),
-    };
+    if let Some((a, b)) = pop_two(interpreter) {
+        interpreter.stack.push(a * b);
+    }
 }
 
 fn divide(interpreter: &mut Interpreter) {
     // println!("divide: {:?}", interpreter.stack);
 
-    match pop_two(interpreter) {
-        Some((a, b)) => {
-            interpreter.stack.push(b / a);
-        }
-        _ => (),
-    };
+    if let Some((a, b)) = pop_two(interpreter) {
+        interpreter.stack.push(b / a);
+    }
 }
 
 fn modulo(interpreter: &mut Interpreter) {
     // println!("modulo: {:?}", interpreter.stack);
 
-    match pop_two(interpreter) {
-        Some((a, b)) => {
-            interpreter.stack.push(b % a);
-        }
-        _ => (),
-    };
+    if let Some((a, b)) = pop_two(interpreter) {
+        interpreter.stack.push(b % a);
+    }
 }
 
 fn not(interpreter: &mut Interpreter) {
     // println!("not: {:?}", interpreter.stack);
 
-    match interpreter.stack.pop() {
-        Some(n) => if n == 0 {
+    if let Some(n) = interpreter.stack.pop() {
+        if n == 0 {
             interpreter.stack.push(1);
         } else {
             interpreter.stack.push(0);
-        },
-        _ => (),
-    };
+        }
+    }
 }
 
 fn greater(interpreter: &mut Interpreter) {
     // println!("greater: {:?}", interpreter.stack);
 
-
-    match pop_two(interpreter) {
-        Some((a, b)) => if b > a {
-            interpreter.stack.push(1)
+    if let Some((a, b)) = pop_two(interpreter) {
+        if b > a {
+            interpreter.stack.push(1);
         } else {
-            interpreter.stack.push(0)
-        },
-        _ => (),
-    };
+            interpreter.stack.push(0);
+        }
+    }
 }
 
 fn pointer(interpreter: &mut Interpreter) {
     // println!("pointer: {:?}", interpreter.stack);
 
-    match interpreter.stack.pop() {
-        Some(n) => if n > 0 {
-            for _ in 1..n.abs() + 1 {
+    if let Some(n) = interpreter.stack.pop() {
+        for _ in 1..n.abs() + 1 {
+            if n > 0 {
                 interpreter.step_dp();
-            }
-        } else {
-            for _ in 1..n.abs() + 1 {
+            } else {
                 interpreter.step_dp_counter();
             }
-        },
-        _ => (),
+        }
     }
 }
 
 fn switch(interpreter: &mut Interpreter) {
     // println!("switch: {:?}", interpreter.stack);
 
-    match interpreter.stack.pop() {
-        Some(n) => for _ in 1..n.abs() + 1 {
+    if let Some(n) = interpreter.stack.pop() {
+        for _ in 1..n.abs() + 1 {
             interpreter.toggle_cc();
-        },
-        _ => (),
+        }
     }
 }
 
@@ -176,7 +142,7 @@ fn duplicate(interpreter: &mut Interpreter) {
     // println!("duplicate: {:?}", interpreter.stack);
 
     let x = match interpreter.stack.last() {
-        Some(n) => n.clone(),
+        Some(n) => *n,
         None => return (),
     };
 
@@ -186,22 +152,19 @@ fn duplicate(interpreter: &mut Interpreter) {
 fn roll(interpreter: &mut Interpreter) {
     // println!("roll: {:?}", interpreter.stack);
 
-    match pop_two(interpreter) {
-        Some((rolls, depth)) => {
-            let neg_depth = interpreter.stack.len() as i32 - depth;
+    if let Some((rolls, depth)) = pop_two(interpreter) {
+        let neg_depth = interpreter.stack.len() as i32 - depth;
 
-            for _ in 1..rolls.abs() + 1 {
-                if rolls > 0 {
-                    let x = interpreter.stack.pop().unwrap();
-                    interpreter.stack.insert(neg_depth as usize, x);
-                } else {
-                    let x = interpreter.stack.remove(neg_depth as usize);
-                    interpreter.stack.push(x);
-                }
+        for _ in 1..rolls.abs() + 1 {
+            if rolls > 0 {
+                let x = interpreter.stack.pop().unwrap();
+                interpreter.stack.insert(neg_depth as usize, x);
+            } else {
+                let x = interpreter.stack.remove(neg_depth as usize);
+                interpreter.stack.push(x);
             }
         }
-        _ => (),
-    };
+    }
 }
 
 fn input(interpreter: &mut Interpreter) {
@@ -225,19 +188,15 @@ fn input(interpreter: &mut Interpreter) {
 fn out_number(interpreter: &mut Interpreter) {
     // println!("out number: {:?}", interpreter.stack);
 
-    match interpreter.stack.pop() {
-        Some(n) => println!("{:?}", n),
-        _ => (),
-    };
+    if let Some(n) = interpreter.stack.pop() {
+        println!("{}", n);
+    }
 }
 
 fn out_char(interpreter: &mut Interpreter) {
     // println!("out char: {:?}", interpreter.stack);
 
-    match interpreter.stack.pop() {
-        Some(n) => {
-            println!("{}", char::from(n as u8));
-        }
-        _ => (),
-    };
+    if let Some(n) = interpreter.stack.pop() {
+        println!("{}", char::from(n as u8));
+    }
 }
