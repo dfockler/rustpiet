@@ -133,7 +133,7 @@ fn switch(interpreter: &mut Interpreter) {
 
     if let Some(n) = interpreter.stack.pop() {
         for _ in 1..n.abs() + 1 {
-            interpreter.toggle_cc();
+            interpreter.codel_chooser.toggle();
         }
     }
 }
