@@ -1,4 +1,4 @@
-use image::{GenericImage, DynamicImage, Rgba};
+use image::{DynamicImage, GenericImage, Rgba};
 use colors;
 use ops;
 
@@ -11,8 +11,7 @@ pub struct Interpreter {
     pub stack: Vec<i32>,
 }
 
-#[derive(Debug)]
-#[derive(PartialEq)]
+#[derive(Debug, PartialEq)]
 enum Direction {
     Left,
     Right,
@@ -34,12 +33,11 @@ impl Interpreter {
             current_color: image.get_pixel(0, 0),
             current_size: 0,
             image: image,
-            stack: Vec::new()
+            stack: Vec::new(),
         }
     }
 
     pub fn run(&mut self) {
-
         let mut failed_attempts = 0;
         let mut failed_white_attempts = 0;
 
@@ -73,7 +71,8 @@ impl Interpreter {
                 if self.restricted(x_next, y_next) {
                     self.update_movement(failed_attempts);
                     failed_attempts += 1;
-                } else { // here we move into the next color block after processing the action
+                } else {
+                    // here we move into the next color block after processing the action
                     x = x_next;
                     y = y_next;
 
@@ -90,7 +89,6 @@ impl Interpreter {
                 }
             }
         }
-
     }
 
     fn process_action(&mut self, next_color: &Rgba<u8>) {
@@ -103,7 +101,7 @@ impl Interpreter {
         }
     }
 
-    
+
     // Based on the number of attempts this either toggles the CC back and forth
     // or updates the current direction of the DP
     fn update_movement(&mut self, attempts: i32) {
@@ -122,21 +120,21 @@ impl Interpreter {
     }
 
     pub fn step_dp(&mut self) {
-      match self.direction_pointer {
-        Direction::Left => self.direction_pointer = Direction::Up,
-        Direction::Right => self.direction_pointer = Direction::Down,
-        Direction::Down => self.direction_pointer = Direction::Left,
-        Direction::Up => self.direction_pointer = Direction::Right,
-      }
+        match self.direction_pointer {
+            Direction::Left => self.direction_pointer = Direction::Up,
+            Direction::Right => self.direction_pointer = Direction::Down,
+            Direction::Down => self.direction_pointer = Direction::Left,
+            Direction::Up => self.direction_pointer = Direction::Right,
+        }
     }
 
     pub fn step_dp_counter(&mut self) {
-      match self.direction_pointer {
-        Direction::Left => self.direction_pointer = Direction::Down,
-        Direction::Right => self.direction_pointer = Direction::Up,
-        Direction::Down => self.direction_pointer = Direction::Right,
-        Direction::Up => self.direction_pointer = Direction::Left,
-      }
+        match self.direction_pointer {
+            Direction::Left => self.direction_pointer = Direction::Down,
+            Direction::Right => self.direction_pointer = Direction::Up,
+            Direction::Down => self.direction_pointer = Direction::Right,
+            Direction::Up => self.direction_pointer = Direction::Left,
+        }
     }
 
     // This method sets the current size after finding the next block
@@ -153,10 +151,10 @@ impl Interpreter {
 
     fn move_step(&self, x: i32, y: i32) -> (i32, i32) {
         match self.direction_pointer {
-            Direction::Left => (x-1, y),
-            Direction::Up => (x, y-1),
-            Direction::Right => (x+1, y),
-            Direction::Down => (x, y+1),
+            Direction::Left => (x - 1, y),
+            Direction::Up => (x, y - 1),
+            Direction::Right => (x + 1, y),
+            Direction::Down => (x, y + 1),
         }
     }
 
@@ -204,7 +202,10 @@ impl Interpreter {
         // println!("DP: {:?}, CC: {:?}", self.direction_pointer, self.codel_chooser);
         // println!("Size: {:?}", size);
         if self.image.in_bounds(x as u32, y as u32) {
-            // println!("curr: {:?},  step: {:?}\n", self.current_color_code(), self.color_at(x, y));
+            // println!(
+            //  "curr: {:?},  step: {:?}\n",
+            //  self.current_color_code(),
+            //  self.color_at(x, y));
             let visit_index = self.marked_index(x, y) as usize;
             // println!("{:?}\n", visit_index);
 
@@ -213,101 +214,73 @@ impl Interpreter {
                 marked[visit_index] = true;
 
                 match self.direction_pointer {
-                    Direction::Left => {
-                        if x < *mx {
-                            *mx = x;
-                            *my = y;
-                        }
-                        else if x == *mx {
-                            match self.codel_chooser {
-                                CodelChooser::Left => {
-                                    if y > *my {
-                                        *my = y;
-                                    }
-                                },
+                    Direction::Left => if x < *mx {
+                        *mx = x;
+                        *my = y;
+                    } else if x == *mx {
+                        match self.codel_chooser {
+                            CodelChooser::Left => if y > *my {
+                                *my = y;
+                            },
 
-                                CodelChooser::Right => {
-                                    if y < *my {
-                                        *my = y;
-                                    }
-                                }
-                            }
+                            CodelChooser::Right => if y < *my {
+                                *my = y;
+                            },
                         }
                     },
-                    Direction::Right => {
-                        if x > *mx {
-                            *mx = x;
-                            *my = y;
-                        }
-                        else if x == *mx {
-                            match self.codel_chooser {
-                                CodelChooser::Left => {
-                                    if y < *my {
-                                        *my = y;
-                                    }
-                                },
+                    Direction::Right => if x > *mx {
+                        *mx = x;
+                        *my = y;
+                    } else if x == *mx {
+                        match self.codel_chooser {
+                            CodelChooser::Left => if y < *my {
+                                *my = y;
+                            },
 
-                                CodelChooser::Right => {
-                                    if y > *my {
-                                        *my = y;
-                                    }
-                                }
-                            }
+                            CodelChooser::Right => if y > *my {
+                                *my = y;
+                            },
                         }
                     },
-                    Direction::Down => {
-                        if y > *my {
-                            *mx = x;
-                            *my = y;
-                        }
-                        else if y == *my {
-                            match self.codel_chooser {
-                                CodelChooser::Left => {
-                                    if x > *mx {
-                                        *mx = x;
-                                    }
-                                },
+                    Direction::Down => if y > *my {
+                        *mx = x;
+                        *my = y;
+                    } else if y == *my {
+                        match self.codel_chooser {
+                            CodelChooser::Left => if x > *mx {
+                                *mx = x;
+                            },
 
-                                CodelChooser::Right => {
-                                    if x < *mx {
-                                        *mx = x;
-                                    }
-                                }
-                            }
+                            CodelChooser::Right => if x < *mx {
+                                *mx = x;
+                            },
                         }
                     },
-                    Direction::Up => {
-                        if y < *my {
-                            *mx = x;
-                            *my = y;
-                        }
-                        else if y == *my {
-                            match self.codel_chooser {
-                                CodelChooser::Left => {
-                                    if x < *mx {
-                                        *mx = x;
-                                    }
-                                },
+                    Direction::Up => if y < *my {
+                        *mx = x;
+                        *my = y;
+                    } else if y == *my {
+                        match self.codel_chooser {
+                            CodelChooser::Left => if x < *mx {
+                                *mx = x;
+                            },
 
-                                CodelChooser::Right => {
-                                    if x > *mx {
-                                        *mx = x;
-                                    }
-                                }
-                            }
+                            CodelChooser::Right => if x > *mx {
+                                *mx = x;
+                            },
                         }
                     },
                 }
 
-                self.block_walk_recursive(size, x+1, y, mx, my, marked);
-                self.block_walk_recursive(size, x-1, y, mx, my, marked);
-                self.block_walk_recursive(size, x, y+1, mx, my, marked);
-                self.block_walk_recursive(size, x, y-1, mx, my, marked);
+                self.block_walk_recursive(size, x + 1, y, mx, my, marked);
+                self.block_walk_recursive(size, x - 1, y, mx, my, marked);
+                self.block_walk_recursive(size, x, y + 1, mx, my, marked);
+                self.block_walk_recursive(size, x, y - 1, mx, my, marked);
             }
         }
         // print!("\n");
     }
-    
+
     fn marked_index(&self, x: i32, y: i32) -> i32 {
         if x == 0 && y == 0 {
             return 0;

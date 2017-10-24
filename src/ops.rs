@@ -67,8 +67,8 @@ fn add(interpreter: &mut Interpreter) {
 
     match pop_two(interpreter) {
         Some((a, b)) => {
-            interpreter.stack.push(a+b);
-        },
+            interpreter.stack.push(a + b);
+        }
         _ => (),
     };
 }
@@ -78,8 +78,8 @@ fn subtract(interpreter: &mut Interpreter) {
 
     match pop_two(interpreter) {
         Some((a, b)) => {
-            interpreter.stack.push(b-a);
-        },
+            interpreter.stack.push(b - a);
+        }
         _ => (),
     };
 }
@@ -89,8 +89,8 @@ fn multiply(interpreter: &mut Interpreter) {
 
     match pop_two(interpreter) {
         Some((a, b)) => {
-            interpreter.stack.push(a*b);
-        },
+            interpreter.stack.push(a * b);
+        }
         _ => (),
     };
 }
@@ -100,8 +100,8 @@ fn divide(interpreter: &mut Interpreter) {
 
     match pop_two(interpreter) {
         Some((a, b)) => {
-            interpreter.stack.push(b/a);
-        },
+            interpreter.stack.push(b / a);
+        }
         _ => (),
     };
 }
@@ -111,8 +111,8 @@ fn modulo(interpreter: &mut Interpreter) {
 
     match pop_two(interpreter) {
         Some((a, b)) => {
-            interpreter.stack.push(b%a);
-        },
+            interpreter.stack.push(b % a);
+        }
         _ => (),
     };
 }
@@ -121,12 +121,10 @@ fn not(interpreter: &mut Interpreter) {
     // println!("not: {:?}", interpreter.stack);
 
     match interpreter.stack.pop() {
-        Some(n) => {
-            if n == 0 {
-                interpreter.stack.push(1);
-            } else {
-                interpreter.stack.push(0);
-            }
+        Some(n) => if n == 0 {
+            interpreter.stack.push(1);
+        } else {
+            interpreter.stack.push(0);
         },
         _ => (),
     };
@@ -137,12 +135,10 @@ fn greater(interpreter: &mut Interpreter) {
 
 
     match pop_two(interpreter) {
-        Some((a, b)) => {
-            if b > a {
-                interpreter.stack.push(1)
-            } else {
-                interpreter.stack.push(0)
-            }
+        Some((a, b)) => if b > a {
+            interpreter.stack.push(1)
+        } else {
+            interpreter.stack.push(0)
         },
         _ => (),
     };
@@ -152,15 +148,13 @@ fn pointer(interpreter: &mut Interpreter) {
     // println!("pointer: {:?}", interpreter.stack);
 
     match interpreter.stack.pop() {
-        Some(n) => {
-            if n > 0 {
-                for _ in 1..n.abs()+1 {
-                    interpreter.step_dp();
-                }
-            } else {
-                for _ in 1..n.abs()+1 {
-                    interpreter.step_dp_counter();
-                }
+        Some(n) => if n > 0 {
+            for _ in 1..n.abs() + 1 {
+                interpreter.step_dp();
+            }
+        } else {
+            for _ in 1..n.abs() + 1 {
+                interpreter.step_dp_counter();
             }
         },
         _ => (),
@@ -171,10 +165,8 @@ fn switch(interpreter: &mut Interpreter) {
     // println!("switch: {:?}", interpreter.stack);
 
     match interpreter.stack.pop() {
-        Some(n) => {
-            for _ in 1..n.abs()+1 {
-                interpreter.toggle_cc();
-            }
+        Some(n) => for _ in 1..n.abs() + 1 {
+            interpreter.toggle_cc();
         },
         _ => (),
     }
@@ -196,9 +188,9 @@ fn roll(interpreter: &mut Interpreter) {
 
     match pop_two(interpreter) {
         Some((rolls, depth)) => {
-            let neg_depth = interpreter.stack.len() as i32 - depth; 
+            let neg_depth = interpreter.stack.len() as i32 - depth;
 
-            for _ in 1..rolls.abs()+1 {
+            for _ in 1..rolls.abs() + 1 {
                 if rolls > 0 {
                     let x = interpreter.stack.pop().unwrap();
                     interpreter.stack.insert(neg_depth as usize, x);
@@ -207,7 +199,7 @@ fn roll(interpreter: &mut Interpreter) {
                     interpreter.stack.push(x);
                 }
             }
-        },
+        }
         _ => (),
     };
 }
@@ -218,14 +210,14 @@ fn input(interpreter: &mut Interpreter) {
     print!("Please type a number: ");
 
     io::stdout().flush().unwrap();
-    
+
     let mut value = String::new();
 
-    io::stdin().read_line(&mut value)
+    io::stdin()
+        .read_line(&mut value)
         .expect("Failed to read line");
 
-    let value: i32 = value.trim().parse()
-        .expect("Please type a number!");
+    let value: i32 = value.trim().parse().expect("Please type a number!");
 
     interpreter.stack.push(value);
 }
@@ -235,7 +227,7 @@ fn out_number(interpreter: &mut Interpreter) {
 
     match interpreter.stack.pop() {
         Some(n) => println!("{:?}", n),
-        _ => ()
+        _ => (),
     };
 }
 
@@ -245,7 +237,7 @@ fn out_char(interpreter: &mut Interpreter) {
     match interpreter.stack.pop() {
         Some(n) => {
             println!("{}", char::from(n as u8));
-        },
-        _ => ()
+        }
+        _ => (),
     };
 }
