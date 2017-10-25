@@ -3,7 +3,7 @@ use colors;
 use ops;
 
 #[derive(Debug, PartialEq)]
-pub enum Direction{
+pub enum Direction {
     Left,
     Right,
     Down,
