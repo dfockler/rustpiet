@@ -120,9 +120,9 @@ fn pointer(interpreter: &mut Interpreter) {
     if let Some(n) = interpreter.stack.pop() {
         for _ in 1..n.abs() + 1 {
             if n > 0 {
-                interpreter.step_dp();
+                interpreter.direction_pointer.step();
             } else {
-                interpreter.step_dp_counter();
+                interpreter.direction_pointer.step_counter();
             }
         }
     }
