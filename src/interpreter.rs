@@ -2,15 +2,6 @@ use image::{DynamicImage, GenericImage, Rgba};
 use colors;
 use ops;
 
-pub struct Interpreter {
-    pub codel_chooser: CodelChooser,
-    pub direction_pointer: Direction,
-    image: DynamicImage,
-    current_color: Rgba<u8>,
-    pub current_size: u32,
-    pub stack: Vec<i32>,
-}
-
 #[derive(Debug, PartialEq)]
 pub enum Direction{
     Left,
@@ -55,6 +46,15 @@ impl CodelChooser {
     }
 }
 
+pub struct Interpreter {
+    pub codel_chooser: CodelChooser,
+    pub direction_pointer: Direction,
+    image: DynamicImage,
+    current_color: Rgba<u8>,
+    pub current_size: u32,
+    pub stack: Vec<i32>,
+}
+
 impl Interpreter {
     pub fn new(image: DynamicImage) -> Interpreter {
         Interpreter {
@@ -70,8 +70,6 @@ impl Interpreter {
     pub fn run(&mut self) {
         let mut failed_attempts = 0;
         let mut failed_white_attempts = 0;
-
-        // These are here for debugging purposes
         let mut x = 0;
         let mut y = 0;
 
@@ -202,17 +200,8 @@ impl Interpreter {
         my: &mut i32,
         marked: &mut Vec<bool>,
     ) {
-        // println!("mx: {:?}, my: {:?}", mx, my);
-        // println!(" x: {:?},  y: {:?}", x, y);
-        // println!("DP: {:?}, CC: {:?}", self.direction_pointer, self.codel_chooser);
-        // println!("Size: {:?}", size);
         if self.image.in_bounds(x as u32, y as u32) {
-            // println!(
-            //  "curr: {:?},  step: {:?}\n",
-            //  self.current_color_code(),
-            //  self.color_at(x, y));
             let visit_index = self.marked_index(x, y) as usize;
-            // println!("{:?}\n", visit_index);
 
             if self.current_color_eq(x, y) && !marked[visit_index] {
                 *size += 1;
@@ -283,7 +272,6 @@ impl Interpreter {
                 self.block_walk_recursive(size, x, y - 1, mx, my, marked);
             }
         }
-        // print!("\n");
     }
 
     fn marked_index(&self, x: i32, y: i32) -> i32 {
