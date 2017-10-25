@@ -287,18 +287,6 @@ impl Interpreter {
     }
 
     fn marked_index(&self, x: i32, y: i32) -> i32 {
-        if x == 0 && y == 0 {
-            return 0;
-        }
-
-        if x == 0 {
-            return y * self.image.width() as i32;
-        }
-
-        if y == 0 {
-            return x;
-        }
-
         y * self.image.width() as i32 + x
     }
 }
