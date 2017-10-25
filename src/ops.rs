@@ -39,60 +39,44 @@ fn pop_two(interpreter: &mut Interpreter) -> Option<(i32, i32)> {
 }
 
 fn push(interpreter: &mut Interpreter) {
-    // println!("push: {:?}", interpreter.stack);
-    // println!("current_size: {:?}", interpreter.current_size);
     interpreter.stack.push(interpreter.current_size as i32);
 }
 
 fn pop(interpreter: &mut Interpreter) {
-    // println!("pop: {:?}", interpreter.stack);
-
     interpreter.stack.pop();
 }
 
 fn add(interpreter: &mut Interpreter) {
-    // println!("add: {:?}", interpreter.stack);
-
     if let Some((a, b)) = pop_two(interpreter) {
         interpreter.stack.push(a + b);
     }
 }
 
 fn subtract(interpreter: &mut Interpreter) {
-    // println!("subtract: {:?}", interpreter.stack);
-
     if let Some((a, b)) = pop_two(interpreter) {
         interpreter.stack.push(b - a);
     }
 }
 
 fn multiply(interpreter: &mut Interpreter) {
-    // println!("multiply: {:?}", interpreter.stack);
-
     if let Some((a, b)) = pop_two(interpreter) {
         interpreter.stack.push(a * b);
     }
 }
 
 fn divide(interpreter: &mut Interpreter) {
-    // println!("divide: {:?}", interpreter.stack);
-
     if let Some((a, b)) = pop_two(interpreter) {
         interpreter.stack.push(b / a);
     }
 }
 
 fn modulo(interpreter: &mut Interpreter) {
-    // println!("modulo: {:?}", interpreter.stack);
-
     if let Some((a, b)) = pop_two(interpreter) {
         interpreter.stack.push(b % a);
     }
 }
 
 fn not(interpreter: &mut Interpreter) {
-    // println!("not: {:?}", interpreter.stack);
-
     if let Some(n) = interpreter.stack.pop() {
         if n == 0 {
             interpreter.stack.push(1);
@@ -103,8 +87,6 @@ fn not(interpreter: &mut Interpreter) {
 }
 
 fn greater(interpreter: &mut Interpreter) {
-    // println!("greater: {:?}", interpreter.stack);
-
     if let Some((a, b)) = pop_two(interpreter) {
         if b > a {
             interpreter.stack.push(1);
@@ -115,8 +97,6 @@ fn greater(interpreter: &mut Interpreter) {
 }
 
 fn pointer(interpreter: &mut Interpreter) {
-    // println!("pointer: {:?}", interpreter.stack);
-
     if let Some(n) = interpreter.stack.pop() {
         for _ in 1..n.abs() + 1 {
             if n > 0 {
@@ -129,8 +109,6 @@ fn pointer(interpreter: &mut Interpreter) {
 }
 
 fn switch(interpreter: &mut Interpreter) {
-    // println!("switch: {:?}", interpreter.stack);
-
     if let Some(n) = interpreter.stack.pop() {
         for _ in 1..n.abs() + 1 {
             interpreter.codel_chooser.toggle();
@@ -139,8 +117,6 @@ fn switch(interpreter: &mut Interpreter) {
 }
 
 fn duplicate(interpreter: &mut Interpreter) {
-    // println!("duplicate: {:?}", interpreter.stack);
-
     let x = match interpreter.stack.last() {
         Some(n) => *n,
         None => return (),
@@ -150,8 +126,6 @@ fn duplicate(interpreter: &mut Interpreter) {
 }
 
 fn roll(interpreter: &mut Interpreter) {
-    // println!("roll: {:?}", interpreter.stack);
-
     if let Some((rolls, depth)) = pop_two(interpreter) {
         let neg_depth = interpreter.stack.len() as i32 - depth;
 
@@ -168,8 +142,6 @@ fn roll(interpreter: &mut Interpreter) {
 }
 
 fn input(interpreter: &mut Interpreter) {
-    // println!("in number: {:?}", interpreter.stack);
-
     print!("Please type a number: ");
 
     io::stdout().flush().unwrap();
@@ -186,16 +158,12 @@ fn input(interpreter: &mut Interpreter) {
 }
 
 fn out_number(interpreter: &mut Interpreter) {
-    // println!("out number: {:?}", interpreter.stack);
-
     if let Some(n) = interpreter.stack.pop() {
         println!("{}", n);
     }
 }
 
 fn out_char(interpreter: &mut Interpreter) {
-    // println!("out char: {:?}", interpreter.stack);
-
     if let Some(n) = interpreter.stack.pop() {
         println!("{}", char::from(n as u8));
     }
