@@ -3,8 +3,8 @@ use colors;
 use ops;
 
 pub struct Interpreter {
-    codel_chooser: CodelChooser,
-    direction_pointer: Direction,
+    pub codel_chooser: CodelChooser,
+    pub direction_pointer: Direction,
     image: DynamicImage,
     current_color: Rgba<u8>,
     pub current_size: u32,
@@ -12,17 +12,47 @@ pub struct Interpreter {
 }
 
 #[derive(Debug, PartialEq)]
-enum Direction {
+pub enum Direction{
     Left,
     Right,
     Down,
     Up,
 }
 
+impl Direction {
+    pub fn step(&mut self) {
+        *self = match *self {
+            Direction::Left => Direction::Up,
+            Direction::Right => Direction::Down,
+            Direction::Down => Direction::Left,
+            Direction::Up => Direction::Right,
+        }
+    }
+
+    pub fn step_counter(&mut self) {
+        *self = match *self {
+            Direction::Left => Direction::Down,
+            Direction::Right => Direction::Up,
+            Direction::Down => Direction::Right,
+            Direction::Up => Direction::Left,
+        }
+    }
+}
+
+
 #[derive(Debug)]
-enum CodelChooser {
+pub enum CodelChooser {
     Right,
     Left,
+}
+
+impl CodelChooser {
+    pub fn toggle(&mut self) {
+        *self = match *self {
+            CodelChooser::Right => CodelChooser::Left,
+            CodelChooser::Left => CodelChooser::Right,
+        };
+    }
 }
 
 impl Interpreter {
@@ -51,8 +81,8 @@ impl Interpreter {
                 let (x_next, y_next) = self.move_step(x, y);
                 // If in white and hit boundary or black then step through dp
                 if self.restricted(x_next, y_next) {
-                    self.toggle_cc();
-                    self.step_dp();
+                    self.codel_chooser.toggle();
+                    self.direction_pointer.step();
                     failed_white_attempts += 1;
                 } else {
                     x = x_next;
@@ -106,34 +136,9 @@ impl Interpreter {
     // or updates the current direction of the DP
     fn update_movement(&mut self, attempts: i32) {
         if attempts % 2 == 0 {
-            self.toggle_cc();
+            self.codel_chooser.toggle();
         } else {
-            self.step_dp();
-        }
-    }
-
-    pub fn toggle_cc(&mut self) {
-        match self.codel_chooser {
-            CodelChooser::Right => self.codel_chooser = CodelChooser::Left,
-            CodelChooser::Left => self.codel_chooser = CodelChooser::Right,
-        };
-    }
-
-    pub fn step_dp(&mut self) {
-        match self.direction_pointer {
-            Direction::Left => self.direction_pointer = Direction::Up,
-            Direction::Right => self.direction_pointer = Direction::Down,
-            Direction::Down => self.direction_pointer = Direction::Left,
-            Direction::Up => self.direction_pointer = Direction::Right,
-        }
-    }
-
-    pub fn step_dp_counter(&mut self) {
-        match self.direction_pointer {
-            Direction::Left => self.direction_pointer = Direction::Down,
-            Direction::Right => self.direction_pointer = Direction::Up,
-            Direction::Down => self.direction_pointer = Direction::Right,
-            Direction::Up => self.direction_pointer = Direction::Left,
+            self.direction_pointer.step();
         }
     }
 
