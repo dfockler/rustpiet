@@ -1,6 +1,6 @@
 [package]
 name = "rustpiet"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Dan Fockler <dfockler13@gmail.com>"]
 
 description = "A Piet interpreter implementation in Rust"
